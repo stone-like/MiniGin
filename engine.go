@@ -11,18 +11,28 @@ type Content interface {
 }
 
 type Engine struct {
-	router               Router
 	allowMultipartMemory int64
+	RouterGroup          *RouterGroup
+	router               *Router
 }
 
 type HandlerFunc func(c *Context)
+
+type HandlerChain []HandlerFunc
 
 func New() *Engine {
 
 	e := &Engine{
 		allowMultipartMemory: defaultMultipartMemory,
 	}
-	// e.router = make(Router)
+
+	tree := NewTrie()
+	e.router = NewRouter(tree)
+	e.RouterGroup = &RouterGroup{
+		basePath: "/",
+		Handlers: nil,
+		engine:   e,
+	}
 	return e
 }
 
@@ -49,10 +59,14 @@ func (e *Engine) allocateContext() *Context {
 	return &Context{engine: e}
 }
 
-func (e *Engine) GET(path string, handler HandlerFunc) {
-	e.router.AddRoute("GET", path, handler)
+func (e *Engine) GET(path string, handlers ...HandlerFunc) {
+	e.RouterGroup.AddRoute(http.MethodGet, path, handlers)
 }
 
-func (e *Engine) POST(path string, handler HandlerFunc) {
-	e.router.AddRoute("POST", path, handler)
+func (e *Engine) POST(path string, handlers ...HandlerFunc) {
+	e.RouterGroup.AddRoute(http.MethodPost, path, handlers)
+}
+
+func (e *Engine) Group(relativePath string, handlers ...HandlerFunc) *RouterGroup {
+	return e.RouterGroup.Group(relativePath, handlers...)
 }

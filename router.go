@@ -1,12 +1,12 @@
 package minigin
 
 type Response struct {
-	handler HandlerFunc
-	params  Params
+	handlers HandlerChain
+	params   Params
 }
 
 type Tree interface {
-	Insert(method string, path string, handler HandlerFunc) error
+	Insert(method string, path string, handlers HandlerChain) error
 	Search(method string, path string) (*Response, error)
 }
 
@@ -24,8 +24,8 @@ func NewRouter(tree Tree) *Router {
 	}
 }
 
-func (r Router) AddRoute(method, path string, handler HandlerFunc) {
-	r.tree.Insert(method, path, handler)
+func (r Router) AddRoute(method, path string, handlers HandlerChain) {
+	r.tree.Insert(method, path, handlers)
 }
 
 func (r Router) Search(method, path string) (*Response, error) {
@@ -41,7 +41,7 @@ func (r Router) handle(c *Context) {
 	}
 	//ここでcontextのparamsにセット
 	c.Params = res.params
-	c.handlers = append(c.handlers, res.handler)
+	c.handlers = append(c.handlers, res.handlers...)
 	c.Next()
 	return
 

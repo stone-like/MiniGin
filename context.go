@@ -24,7 +24,7 @@ type Context struct {
 	Request    *http.Request
 	Writer     http.ResponseWriter
 	Params     Params
-	handlers   []HandlerFunc
+	handlers   HandlerChain
 	index      int8
 	queryCache url.Values
 	formCache  url.Values

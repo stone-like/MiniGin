@@ -19,10 +19,10 @@ func fakeHandler(val string) HandlerFunc {
 
 func TestSearch(t *testing.T) {
 	trie := NewTrie()
-	trie.Insert(http.MethodGet, "/", fakeHandler("root"))
-	trie.Insert(http.MethodGet, "/foo", fakeHandler("foo"))
-	trie.Insert(http.MethodGet, "/bar", fakeHandler("bar"))
-	trie.Insert(http.MethodPost, "/foo/bar", fakeHandler("fooBar"))
+	trie.Insert(http.MethodGet, "/", HandlerChain{fakeHandler("root")})
+	trie.Insert(http.MethodGet, "/foo", HandlerChain{fakeHandler("foo")})
+	trie.Insert(http.MethodGet, "/bar", HandlerChain{fakeHandler("bar")})
+	trie.Insert(http.MethodPost, "/foo/bar", HandlerChain{fakeHandler("fooBar")})
 
 	cases := []struct {
 		name     string
@@ -47,7 +47,9 @@ func TestSearch(t *testing.T) {
 			res, err := trie.Search(c.method, c.path)
 
 			if err == nil {
-				res.handler(nil) //hを起動して、expectedValueに値を入れる
+
+				assert.Equal(t, 1, len(res.handlers))
+				res.handlers[0](nil) //hを起動して、expectedValueに値を入れる
 				assert.Equal(t, expectedValue, c.expected)
 
 			} else {
@@ -60,9 +62,9 @@ func TestSearch(t *testing.T) {
 
 func TestSearchWild(t *testing.T) {
 	trie := NewTrie()
-	trie.Insert(http.MethodGet, "/", fakeHandler("root"))
-	trie.Insert(http.MethodGet, "/foo/:name", fakeHandler("foo"))
-	trie.Insert(http.MethodGet, "/bar/:id/:meta", fakeHandler("bar"))
+	trie.Insert(http.MethodGet, "/", HandlerChain{fakeHandler("root")})
+	trie.Insert(http.MethodGet, "/foo/:name", HandlerChain{fakeHandler("foo")})
+	trie.Insert(http.MethodGet, "/bar/:id/:meta", HandlerChain{fakeHandler("bar")})
 
 	cases := []struct {
 		name     string
@@ -88,7 +90,8 @@ func TestSearchWild(t *testing.T) {
 			res, err := trie.Search(c.method, c.path)
 
 			if err == nil {
-				res.handler(nil) //hを起動して、expectedValueに値を入れる
+				assert.Equal(t, 1, len(res.handlers))
+				res.handlers[0](nil) //hを起動して、expectedValueに値を入れる
 				assert.Equal(t, expectedValue, c.expected)
 
 				if diff := cmp.Diff(res.params, c.params); diff != "" {

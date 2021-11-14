@@ -25,7 +25,7 @@ type tree struct {
 type node struct {
 	path      string
 	children  map[string]*node
-	actions   map[string]HandlerFunc
+	actions   map[string]HandlerChain
 	endOfPath bool
 	isWild    bool
 }
@@ -34,7 +34,7 @@ func NewTrie() *tree {
 	return &tree{
 		node: &node{
 			path:     pathRoot,
-			actions:  make(map[string]HandlerFunc),
+			actions:  make(map[string]HandlerChain),
 			children: make(map[string]*node),
 		},
 	}
@@ -48,13 +48,13 @@ func getWildKey(path string) string {
 	return path[1:]
 }
 
-func (t *tree) Insert(method string, path string, handler HandlerFunc) error {
+func (t *tree) Insert(method string, path string, handlers HandlerChain) error {
 	curNode := t.node
 
 	//"/"の場合は直ぐに終了
 	if path == pathRoot {
 		curNode.path = path
-		curNode.actions[method] = handler
+		curNode.actions[method] = handlers
 		curNode.endOfPath = true
 		return nil
 	}
@@ -69,7 +69,7 @@ func (t *tree) Insert(method string, path string, handler HandlerFunc) error {
 
 		curNode.children[path] = &node{
 			path:     path,
-			actions:  make(map[string]HandlerFunc),
+			actions:  make(map[string]HandlerChain),
 			children: make(map[string]*node),
 			isWild:   isWild(path),
 		}
@@ -78,7 +78,7 @@ func (t *tree) Insert(method string, path string, handler HandlerFunc) error {
 
 		if i == len(paths)-1 {
 			curNode.path = path
-			curNode.actions[method] = handler
+			curNode.actions[method] = handlers
 			curNode.endOfPath = true
 		}
 	}
@@ -152,14 +152,14 @@ func (t *tree) Search(method string, path string) (*Response, error) {
 		return nil, err
 	}
 
-	handler, ok := pathNode.actions[method]
+	handlers, ok := pathNode.actions[method]
 	if !ok {
 		return nil, methodNotRegisteredError(method)
 	}
 
 	return &Response{
-		handler: handler,
-		params:  params,
+		handlers: handlers,
+		params:   params,
 	}, nil
 }
 
