@@ -1,0 +1,16 @@
+[0m2021.11.09 11:39:30 INFO  Started: Metals version 0.10.9 in workspace 'C:\Users\user\Documents\MiniGin' for client Visual Studio Code 1.61.2.[0m
+[0m2021.11.09 11:39:36 INFO  time: initialize in 5.21s[0m
+[0m2021.11.09 11:39:37 WARN  Build server is not auto-connectable.[0m
+[0m2021.11.09 11:39:37 WARN  no build tool detected in workspace 'C:\Users\user\Documents\MiniGin'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. [0m
+[0m2021.11.11 00:01:25 INFO  Started: Metals version 0.10.9 in workspace 'C:\Users\user\Documents\MiniGin' for client Visual Studio Code 1.61.2.[0m
+[0m2021.11.11 00:01:29 INFO  time: initialize in 4.93s[0m
+[0m2021.11.11 00:01:34 WARN  Build server is not auto-connectable.[0m
+[0m2021.11.11 00:01:34 WARN  no build tool detected in workspace 'C:\Users\user\Documents\MiniGin'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. [0m
+11åé 14, 2021 4:50:31 åﬂå„ org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+èÓïÒ: Unsupported notification method: $/setTrace
+11åé 14, 2021 4:51:32 åﬂå„ org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+èÓïÒ: Unsupported notification method: $/setTrace
+11åé 14, 2021 5:33:31 åﬂå„ org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+èÓïÒ: Unsupported notification method: $/setTrace
+11åé 14, 2021 5:33:34 åﬂå„ org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+èÓïÒ: Unsupported notification method: $/setTrace
